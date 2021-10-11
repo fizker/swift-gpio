@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-	name: "SwiftGPIO",
+	name: "swift-gpio",
 	platforms: [
 		.iOS(.v10),
 		.macOS(.v10_12),
