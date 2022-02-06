@@ -21,6 +21,9 @@ public class GPIO {
 		self.pin = pin
 		self.direction = direction
 		self.value = value
+
+		gpio.direction = direction.swifty
+		gpio.value = value.swifty
 	}
 
 	deinit {
