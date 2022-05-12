@@ -1,19 +1,35 @@
 import SwiftyGPIO
 
-/// This is constructed from the factory method on `GPIOs`.
+/// Represents and controls a pin on the board.
+///
+/// It is constructed from the factory method ``GPIOController/gpio(pin:direction:value:)``.
 public class GPIO {
+	/// The physical pin that this is representing.
 	public let pin: Pin
+
+	/// The IO direction of the pin.
 	public var direction: Direction {
 		didSet { gpio.direction = direction.swifty }
 	}
+
+	/// The current value of the pin.
+	///
+	/// If ``direction-swift.property`` is ``Direction-swift.enum/in``, this is whether or not the pin is receiving current.
+	///
+	/// If ``direction-swift.property`` is ``Direction-swift.enum/out``, this is whether or not the pin is emitting current.
 	public var value: Value {
 		get { .init(swifty: gpio.value) }
 		set { gpio.value = newValue.swifty }
 	}
+
+	/// The current pull value.
+	///
+	/// This only makes sense if ``direction-swift.property`` is ``Direction-swift.enum/in``.
 	public var pull: Pull {
-		get { gpio.pull }
-		set { gpio.pull = newValue }
+		get { .init(swifty: gpio.pull) }
+		set { gpio.pull = newValue.swifty }
 	}
+
 	var gpio: SwiftyGPIO_GPIO
 
 	init(gpio: SwiftyGPIO_GPIO, pin: Pin, direction: Direction, value: Value) {
@@ -33,7 +49,12 @@ public class GPIO {
 		}
 	}
 
-	public typealias Pull = GPIOPull
+	/// The resting state of the pin.
+	///
+	/// If set to ``Pull-swift.enum/up`` and there is no input, then ``value-swift.property`` is ``Value-swift.enum/on``.
+	public enum Pull {
+		case up, down, neither
+	}
 
 	/// The value of the pin. ``on`` correspond to `1`, ``off`` corresponds to `0`.
 	public enum Value {
@@ -128,6 +149,24 @@ extension GPIO.Pin {
 		case .p45: return .P45
 		case .p46: return .P46
 		case .p47: return .P47
+		}
+	}
+}
+
+extension GPIO.Pull {
+	init(swifty: GPIOPull) {
+		switch swifty {
+		case .neither: self = .neither
+		case .down: self = .down
+		case .up: self = .up
+		}
+	}
+
+	var swifty: GPIOPull {
+		switch self {
+		case .up: return .up
+		case .down: return .down
+		case .neither: return .neither
 		}
 	}
 }
