@@ -15,7 +15,7 @@ final class GPIOsTests: XCTestCase {
 		_ = gpio
 
 		XCTAssertThrowsError(try controller.gpio(pin: .p0, direction: .in, value: .off)) { error in
-			guard let e = error as? GPIOController.E, case let GPIOController.E.pinInUse(pin) = e
+			guard let e = error as? GPIOController.Error, case let GPIOController.Error.pinInUse(pin) = e
 			else {
 				XCTFail("Unexpected error: \(error)")
 				return
