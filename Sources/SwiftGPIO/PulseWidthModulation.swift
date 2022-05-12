@@ -46,7 +46,7 @@ class SoftwarePulseWidthModulation: PulseWidthModulation {
 	}
 }
 
-public extension GPIOs {
+public extension GPIOController {
 	func softwarePulseWidthModulation(for pin: GPIO.Pin, duty: Float = 0, range: UInt32 = 100) throws -> PulseWidthModulation {
 		let gpio = try self.gpio(pin: pin, direction: .out)
 		return SoftwarePulseWidthModulation(gpio: gpio, duty: duty, range: range)

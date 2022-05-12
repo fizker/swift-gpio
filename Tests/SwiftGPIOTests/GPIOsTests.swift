@@ -7,15 +7,15 @@ class TestGPIO: SwiftyGPIO_GPIO {
 
 final class GPIOsTests: XCTestCase {
 	func test__gpio__gpioIsKeptAlive_pinIsUsed__throws() throws {
-		let gpios = GPIOs(board: .chip, gpios: [
+		let controller = GPIOController(board: .chip, gpios: [
 			.P0: TestGPIO(name: "foo", id: 0),
 		])
-		let gpio = try gpios.gpio(pin: .p0, direction: .in, value: .off)
+		let gpio = try controller.gpio(pin: .p0, direction: .in, value: .off)
 		// Silencing unused-var warning. We need to keep this var alive for the weak-thing to work
 		_ = gpio
 
-		XCTAssertThrowsError(try gpios.gpio(pin: .p0, direction: .in, value: .off)) { error in
-			guard let e = error as? GPIOs.E, case let GPIOs.E.pinInUse(pin) = e
+		XCTAssertThrowsError(try controller.gpio(pin: .p0, direction: .in, value: .off)) { error in
+			guard let e = error as? GPIOController.E, case let GPIOController.E.pinInUse(pin) = e
 			else {
 				XCTFail("Unexpected error: \(error)")
 				return
@@ -26,17 +26,17 @@ final class GPIOsTests: XCTestCase {
 	}
 
 	func test__gpio__gpioIsDeinit__createsAgain() throws {
-		let gpios = GPIOs(board: .chip, gpios: [
+		let controller = GPIOController(board: .chip, gpios: [
 			.P0: TestGPIO(name: "foo", id: 0),
 		])
 
-		var gpio: SwiftGPIO.GPIO? = try gpios.gpio(pin: .p0, direction: .in, value: .off)
+		var gpio: SwiftGPIO.GPIO? = try controller.gpio(pin: .p0, direction: .in, value: .off)
 		// Silencing unused-var warning
 		_ = gpio
 
 		// Setting to nil triggers deinit
 		gpio = nil
 
-		_ = try gpios.gpio(pin: .p0, direction: .in, value: .off)
+		_ = try controller.gpio(pin: .p0, direction: .in, value: .off)
 	}
 }

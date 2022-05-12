@@ -8,7 +8,7 @@ final class Weak<T: AnyObject> {
 	}
 }
 
-public class GPIOs {
+public class GPIOController {
 	enum E: Error {
 		case pinInUse(GPIO.Pin)
 		case pinNotFound(GPIO.Pin)
