@@ -35,9 +35,31 @@ public class GPIO {
 
 	public typealias Pull = GPIOPull
 
-	/// The value of the pin. `on` correspond to `1`, `off` corresponds to `0`.
+	/// The value of the pin. ``on`` correspond to `1`, ``off`` corresponds to `0`.
 	public enum Value {
 		case on, off
+
+		/// Creates a new Value based on the value of the given `Bool`.
+		///
+		/// `true` corresponds to ``on``, `false` corresponds to ``off``.
+		public init(_ bool: Bool) {
+			self = bool ? .on : .off
+		}
+
+		/// Toggles the value to be the opposite of the current value.
+		public mutating func toggle() {
+			switch self {
+			case .on: self = .off
+			case .off: self = .on
+			}
+		}
+
+		/// Returns the opposite of the current value.
+		public func toggled() -> Self {
+			var val = self
+			val.toggle()
+			return val
+		}
 	}
 
 	/// The direction of the IO operation.
