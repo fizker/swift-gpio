@@ -18,7 +18,7 @@ let package = Package(
 		),
 	],
 	dependencies: [
-		.package(url: "https://github.com/uraimo/SwiftyGPIO.git", from: "1.3.5"),
+		.package(url: "https://github.com/fizker/SwiftyGPIO.git", from: "1.4.5-unwrap-optionals"),
 	],
 	targets: [
 		.target(
