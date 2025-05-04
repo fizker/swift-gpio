@@ -1,13 +1,5 @@
 import WiringPi
 
-final class Weak<T: AnyObject> {
-	weak var value: T?
-
-	init(_ value: T) {
-		self.value = value
-	}
-}
-
 /// A controller for a board. It is responsible for creating and configuring ``GPIO`` instances.
 public class GPIOController {
 	/// Errors that might be thrown by the controller.
@@ -20,6 +12,9 @@ public class GPIOController {
 
 	/// The board that this controller is controlling.
 	public let board: Board
+
+	/// The Hardware PulseWidthModulation controller.
+	public let pwm = HardwarePulseWidthModulationController()
 
 	var gpios: [GPIO.Pin: Weak<GPIO>] = [:]
 
