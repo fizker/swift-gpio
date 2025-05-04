@@ -1,13 +1,13 @@
 {
-  "originHash" : "551ac2c9ba203d520364c225bc8aba0724691f0435f3bdc83f2d82accd776fc5",
+  "originHash" : "f93d188d031bb1449600942131d51de02338a89646d5af58e0c61d5c883aaff8",
   "pins" : [
     {
       "identity" : "swift-wiringpi",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fizker/swift-wiringpi.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "8da151dfccdf49c0d10c584d4c26c616732d15eb"
+        "revision" : "1265633d28003833865fec17651fb3fa814d8fb9",
+        "version" : "0.1.0"
       }
     }
   ],

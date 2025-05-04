@@ -11,7 +11,7 @@ let package = Package(
 		),
 	],
 	dependencies: [
-		.package(url: "https://github.com/fizker/swift-wiringpi.git", branch: "main"),
+		.package(url: "https://github.com/fizker/swift-wiringpi.git", .upToNextMinor(from: "0.1.0")),
 	],
 	targets: [
 		.target(
