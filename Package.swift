@@ -1,35 +1,28 @@
-// swift-tools-version:5.4
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version:6.1
 
 import PackageDescription
 
 let package = Package(
 	name: "swift-gpio",
-	platforms: [
-		.iOS(.v10),
-		.macOS(.v10_12),
-		.tvOS(.v10),
-		.watchOS(.v3),
-	],
 	products: [
 		.library(
 			name: "SwiftGPIO",
-			targets: ["SwiftGPIO"]
+			targets: ["SwiftGPIO"],
 		),
 	],
 	dependencies: [
-		.package(url: "https://github.com/fizker/SwiftyGPIO.git", from: "1.4.5-unwrap-optionals"),
+		.package(url: "https://github.com/fizker/swift-wiringpi.git", branch: "main"),
 	],
 	targets: [
 		.target(
 			name: "SwiftGPIO",
 			dependencies: [
-				"SwiftyGPIO",
-			]
+				.product(name: "WiringPi", package: "swift-wiringpi"),
+			],
 		),
 		.testTarget(
 			name: "SwiftGPIOTests",
-			dependencies: ["SwiftGPIO"]
+			dependencies: ["SwiftGPIO"],
 		),
 	]
 )

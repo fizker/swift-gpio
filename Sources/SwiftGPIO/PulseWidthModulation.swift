@@ -1,5 +1,4 @@
 import Foundation
-import SwiftyGPIO
 
 /// Configures a pin to oscillate between `on` and `off`. This is generally used to have a pin be represented at values between `0` and `1`.
 ///
