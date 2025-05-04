@@ -1,4 +1,4 @@
-import SwiftyGPIO
+import WiringPi
 
 /// Represents and controls a pin on the board.
 ///
@@ -9,7 +9,7 @@ public class GPIO {
 
 	/// The IO direction of the pin.
 	public var direction: Direction {
-		didSet { gpio.direction = direction.swifty }
+		didSet { change(mode: direction.wpi, for: pin.gpioAddress) }
 	}
 
 	/// The current value of the pin.
@@ -18,28 +18,23 @@ public class GPIO {
 	///
 	/// If ``direction-swift.property`` is ``Direction-swift.enum/out``, this is whether or not the pin is emitting current.
 	public var value: Value {
-		get { .init(swifty: gpio.value) }
-		set { gpio.value = newValue.swifty }
+		get { .init(wpi: digitalRead(from: pin.gpioAddress)) }
+		set { digitalWrite(value: newValue.wpi, to: pin.gpioAddress) }
 	}
 
 	/// The current pull value.
 	///
 	/// This only makes sense if ``direction-swift.property`` is ``Direction-swift.enum/in``.
-	public var pull: Pull {
-		get { .init(swifty: gpio.pull) }
-		set { gpio.pull = newValue.swifty }
+	public var pull: Pull = .neither {
+		didSet { change(pull: pull.wpi, for: pin.gpioAddress) }
 	}
 
-	var gpio: SwiftyGPIO_GPIO
-
-	init(gpio: SwiftyGPIO_GPIO, pin: Pin, direction: Direction, value: Value) {
-		self.gpio = gpio
+	init(pin: Pin, direction: Direction, value: Value) {
 		self.pin = pin
 		self.direction = direction
 		self.value = value
 
-		gpio.direction = direction.swifty
-		gpio.value = value.swifty
+		change(mode: direction.wpi, for: pin.gpioAddress)
 	}
 
 	deinit {
@@ -89,7 +84,7 @@ public class GPIO {
 	}
 
 	/// A pin on the board
-	public enum Pin {
+	public enum Pin: Sendable {
 		case p0, p1, p2, p3, p4, p5, p6, p7, p8, p9
 		case p10, p11, p12, p13, p14, p15, p16, p17, p18, p19
 		case p20, p21, p22, p23, p24, p25, p26, p27, p28, p29
@@ -99,105 +94,113 @@ public class GPIO {
 }
 
 extension GPIO.Pin {
-	var swifty: GPIOName {
+	var gpioAddress: Int32 {
 		switch self {
-		case .p0: return .P0
-		case .p1: return .P1
-		case .p2: return .P2
-		case .p3: return .P3
-		case .p4: return .P4
-		case .p5: return .P5
-		case .p6: return .P6
-		case .p7: return .P7
-		case .p8: return .P8
-		case .p9: return .P9
-		case .p10: return .P10
-		case .p11: return .P11
-		case .p12: return .P12
-		case .p13: return .P13
-		case .p14: return .P14
-		case .p15: return .P15
-		case .p16: return .P16
-		case .p17: return .P17
-		case .p18: return .P18
-		case .p19: return .P19
-		case .p20: return .P20
-		case .p21: return .P21
-		case .p22: return .P22
-		case .p23: return .P23
-		case .p24: return .P24
-		case .p25: return .P25
-		case .p26: return .P26
-		case .p27: return .P27
-		case .p28: return .P28
-		case .p29: return .P29
-		case .p30: return .P30
-		case .p31: return .P31
-		case .p32: return .P32
-		case .p33: return .P33
-		case .p34: return .P34
-		case .p35: return .P35
-		case .p36: return .P36
-		case .p37: return .P37
-		case .p38: return .P38
-		case .p39: return .P39
-		case .p40: return .P40
-		case .p41: return .P41
-		case .p42: return .P42
-		case .p43: return .P43
-		case .p44: return .P44
-		case .p45: return .P45
-		case .p46: return .P46
-		case .p47: return .P47
+		case .p0: 0
+		case .p1: 1
+		case .p2: 2
+		case .p3: 3
+		case .p4: 4
+		case .p5: 5
+		case .p6: 6
+		case .p7: 7
+		case .p8: 8
+		case .p9: 9
+		case .p10: 10
+		case .p11: 11
+		case .p12: 12
+		case .p13: 13
+		case .p14: 14
+		case .p15: 15
+		case .p16: 16
+		case .p17: 17
+		case .p18: 18
+		case .p19: 19
+		case .p20: 20
+		case .p21: 21
+		case .p22: 22
+		case .p23: 23
+		case .p24: 24
+		case .p25: 25
+		case .p26: 26
+		case .p27: 27
+		case .p28: 28
+		case .p29: 29
+		case .p30: 30
+		case .p31: 31
+		case .p32: 32
+		case .p33: 33
+		case .p34: 34
+		case .p35: 35
+		case .p36: 36
+		case .p37: 37
+		case .p38: 38
+		case .p39: 39
+		case .p40: 40
+		case .p41: 41
+		case .p42: 42
+		case .p43: 43
+		case .p44: 44
+		case .p45: 45
+		case .p46: 46
+		case .p47: 47
 		}
 	}
 }
 
 extension GPIO.Pull {
-	init(swifty: GPIOPull) {
-		switch swifty {
-		case .neither: self = .neither
+	init(wpi: Pin.Pull) {
+		switch wpi {
+		case .off: self = .neither
 		case .down: self = .down
 		case .up: self = .up
 		}
 	}
 
-	var swifty: GPIOPull {
+	var wpi: Pin.Pull {
 		switch self {
 		case .up: return .up
 		case .down: return .down
-		case .neither: return .neither
+		case .neither: return .off
 		}
 	}
 }
 
 extension GPIO.Direction {
-	init(swifty: GPIODirection) {
-		switch swifty {
-		case .IN: self = .in
-		case .OUT: self = .out
+	init?(wpi: Pin.Mode) {
+		switch wpi {
+		case .input: self = .in
+		case .output: self = .out
+		case .pwmOutput: self = .out
+		case .pwmMSOutput: self = .out
+		case .pwmBALOutput: self = .out
+		case .gpioClock: self = .out
+		case .softwarePWMOutput: self = .out
+		case .softwareToneOutput: self = .out
+		case .pwmToneOutput: self = .out
+		case .off: return nil
 		}
 	}
 
-	var swifty: GPIODirection {
+	var wpi: Pin.Mode {
 		switch self {
-		case .in: return .IN
-		case .out: return .OUT
+		case .in: return .input
+		case .out: return .output
 		}
 	}
 }
 
 extension GPIO.Value {
-	init(swifty: Int) {
-		switch swifty {
-		case 0: self = .off
-		default: self = .on
+	init(wpi: Pin.Value) {
+		switch wpi {
+		case .low: self = .off
+		case .high: self = .on
 		}
 	}
-	var swifty: Int {
+	var wpi: Pin.Value {
 		switch self {
-		case .off: return 0
-		case .on: return 1
+		case .off: return .low
+		case .on: return .high
 		}
 	}
 }

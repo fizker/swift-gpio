@@ -1,5 +1,4 @@
 import Foundation
-import SwiftyGPIO
 
 /// Configures a pin to oscillate between `on` and `off`. This is generally used to have a pin be represented at values between `0` and `1`.
 ///
@@ -29,7 +28,8 @@ public protocol PulseWidthModulation {
 	var duty: Float { get set }
 }
 
-class SoftwarePulseWidthModulation: PulseWidthModulation {
+#warning("We use @unchecked Sendable here")
+class SoftwarePulseWidthModulation: PulseWidthModulation, @unchecked Sendable {
 	public var duty: Float {
 		didSet {
 			if duty < 0 {
@@ -56,6 +56,7 @@ class SoftwarePulseWidthModulation: PulseWidthModulation {
 		thread?.start()
 	}
 
+	@Sendable
 	func run() {
 		while(true) {
 			let mark = UInt32(duty)

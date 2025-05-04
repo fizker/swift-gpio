@@ -1,16 +1,15 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SwiftyGPIO",
-        "repositoryURL": "https://github.com/fizker/SwiftyGPIO.git",
-        "state": {
-          "branch": null,
-          "revision": "089f1270ac24f45985fe720cd6a2699dd3adf185",
-          "version": "1.4.5-unwrap-optionals"
-        }
+  "originHash" : "f93d188d031bb1449600942131d51de02338a89646d5af58e0c61d5c883aaff8",
+  "pins" : [
+    {
+      "identity" : "swift-wiringpi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fizker/swift-wiringpi.git",
+      "state" : {
+        "revision" : "1265633d28003833865fec17651fb3fa814d8fb9",
+        "version" : "0.1.0"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 3
 }

@@ -1,12 +1,4 @@
-import SwiftyGPIO
-
-final class Weak<T: AnyObject> {
-	weak var value: T?
-
-	init(_ value: T) {
-		self.value = value
-	}
-}
+import WiringPi
 
 /// A controller for a board. It is responsible for creating and configuring ``GPIO`` instances.
 public class GPIOController {
@@ -21,19 +13,15 @@ public class GPIOController {
 	/// The board that this controller is controlling.
 	public let board: Board
 
-	var swiftyGPIOs: [GPIOName: SwiftyGPIO_GPIO]
-	var gpios: [GPIO.Pin: Weak<GPIO>] = [:]
+	/// The Hardware PulseWidthModulation controller.
+	public let pwm = HardwarePulseWidthModulationController()
 
-	// Internal init used by tests
-	init(board: Board, gpios: [GPIOName: SwiftyGPIO_GPIO]) {
-		self.board = board
-		self.swiftyGPIOs = gpios
-	}
+	var gpios: [GPIO.Pin: Weak<GPIO>] = [:]
 
 	/// Creates a controller for the given board.
 	public init(board: Board) {
 		self.board = board
-		self.swiftyGPIOs = SwiftyGPIO.GPIOs(for: board.swifty)
+		setupBoard(addressMode: .gpio)
 	}
 
 	/// Returns a ``GPIO`` matching the given pin and direction.
@@ -45,17 +33,14 @@ public class GPIOController {
 	/// - parameter value: The initial value. This is a convenience parameter as the value can be changed later.
 	/// - throws: If the requested pin is already in use, this will throw ``Error/pinInUse(_:)``. If a pin is requested that the current board does not have, it will throw ``Error/pinNotFound(_:)``.
 	/// - returns: A configured ``GPIO`` instance.
-	public func gpio(pin: GPIO.Pin, direction: GPIO.Direction, value: GPIO.Value = .off) throws -> GPIO {
+	public func gpio(pin: GPIO.Pin, direction: GPIO.Direction, value: GPIO.Value = .off) throws(Error) -> GPIO {
 		if let wrapper = gpios[pin] {
 			guard wrapper.value == nil
 			else { throw Error.pinInUse(pin) }
 			gpios[pin] = nil
 		}
 
-		guard let sg = swiftyGPIOs[pin.swifty]
-		else { throw Error.pinNotFound(pin) }
-
-		let gpio = GPIO(gpio: sg, pin: pin, direction: direction, value: value)
+		let gpio = GPIO(pin: pin, direction: direction, value: value)
 
 		gpios[pin] = .init(gpio)
 
