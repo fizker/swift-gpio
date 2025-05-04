@@ -64,7 +64,7 @@ public class HardwarePulseWidthModulation: PulseWidthModulation {
 
 	public var duty: Float = 0 {
 		didSet {
-			PWM.write(value: Int32(1024 * duty), to: address)
+			PWM.write(value: Int32(1024 * duty / 100), to: address)
 		}
 	}
 
